@@ -11,7 +11,8 @@
     <RootNamespace>QuickTest</RootNamespace>
     <AssemblyName>QuickTest</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -49,14 +50,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DbLinq.MySql\DbLinq.MySql.csproj">
-      <Project>{FA8D1068-3341-4956-BF94-54C6A816BD9E}</Project>
-      <Name>DbLinq.MySql</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DbLinq.csproj">
       <Project>{7950197D-4122-49CB-9FD7-45E666BAFEC2}</Project>
       <Name>DbLinq</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

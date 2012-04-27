@@ -131,5 +131,16 @@ using nwind;
                        select o).First();
 
         }
+        
+        [Test(Description = "where true and where true")]
+        public void LinqToSqlWhere09()
+        {
+            Northwind db = CreateDB();
+            var ord = (from o in db.Orders
+                       where true
+                       where true
+                       select o).First();
+
+        }        
     }
 }

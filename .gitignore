@@ -6,3 +6,4 @@ build.dbg.mono
 UpgradeLog.XML
 _UpgradeReport_Files
 *.user
+_ReSharper*/

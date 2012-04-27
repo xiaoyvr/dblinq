@@ -59,12 +59,16 @@ namespace DbLinq.Sqlite
         {
             return "COUNT(*)";
         }
+        public override SqlStatement GetLiteral(System.DateTime literal)
+        {
+            return string.Format("'{0}'",base.GetLiteral(literal));
+        }
 
         public override SqlStatement GetLiteral(bool literal)
         {
             if (literal)
                 return "1";
             return "0";
-        }
+        }        
     }
 }

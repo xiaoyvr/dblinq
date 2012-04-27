@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DbMetal</RootNamespace>
     <AssemblyName>DbMetal</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\DbLinq.snk</AssemblyOriginatorKeyFile>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -32,6 +32,7 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -127,26 +128,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DbLinq.Firebird\DbLinq.Firebird.csproj">
-      <Project>{E1AB58E4-357E-4031-90F3-6AABA9623047}</Project>
-      <Name>DbLinq.Firebird</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DbLinq.Ingres\DbLinq.Ingres.csproj">
-      <Project>{90D57CD9-D704-409E-88A1-0F22AC79065A}</Project>
-      <Name>DbLinq.Ingres</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DbLinq.MySql\DbLinq.MySql.csproj">
-      <Project>{FA8D1068-3341-4956-BF94-54C6A816BD9E}</Project>
-      <Name>DbLinq.MySql</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DbLinq.Oracle\DbLinq.Oracle.csproj">
-      <Project>{D9DE72A2-D885-4C54-A89E-302E6829101C}</Project>
-      <Name>DbLinq.Oracle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DbLinq.PostgreSql\DbLinq.PostgreSql.csproj">
-      <Project>{32824F7E-9260-413C-B174-F3E315936FA7}</Project>
-      <Name>DbLinq.PostgreSql</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DbLinq.Sqlite\DbLinq.Sqlite.csproj">
       <Project>{60B9AFA1-99B4-4DE6-80E1-80BBED1AC755}</Project>
       <Name>DbLinq.Sqlite</Name>

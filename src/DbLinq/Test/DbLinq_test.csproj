@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DbLinq_test</RootNamespace>
     <AssemblyName>DbLinq_test</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\DbLinq.snk</AssemblyOriginatorKeyFile>
@@ -33,6 +33,7 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -91,10 +92,6 @@
     <Compile Include="TypeContextTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DbMetal\DbMetal.csproj">
-      <Project>{363FF43D-C870-4423-BE50-DAED7793A6D1}</Project>
-      <Name>DbMetal</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DbLinq.csproj">
       <Project>{7950197D-4122-49CB-9FD7-45E666BAFEC2}</Project>
       <Name>DbLinq</Name>

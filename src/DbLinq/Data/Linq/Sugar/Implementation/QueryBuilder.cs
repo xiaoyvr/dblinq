@@ -293,6 +293,7 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
                         scopeExpression.Where.Add(Expression.Equal(Expression.Constant(true), Expression.Constant(false)));
                     }
                     else
+                        whereToRemove.Reverse();
                         foreach (int whereIndex in whereToRemove)
                             scopeExpression.Where.RemoveAt(whereIndex);
                 }

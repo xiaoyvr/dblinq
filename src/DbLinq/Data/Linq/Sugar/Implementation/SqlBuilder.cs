@@ -25,6 +25,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -35,6 +36,7 @@ using DbLinq.Data.Linq.Sugar.Expressions;
 
 using DbLinq.Factory;
 using DbLinq.Util;
+using DbLinq.Vendor;
 
 namespace DbLinq.Data.Linq.Sugar.Implementation
 {
@@ -196,25 +198,13 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
                 }
                 return sqlProvider.GetColumn(columnExpression.Name);
             }
-            if (expression is InputParameterExpression)
+
+            var inputParameterExpression = expression as InputParameterExpression;
+            if (inputParameterExpression != null)
             {
-                var inputParameterExpression = (InputParameterExpression)expression;
-                if (expression.Type.IsArray)
-                {
-                    int i = 0;
-                    List<SqlStatement> inputParameters = new List<SqlStatement>();
-                    foreach (object p in (Array)inputParameterExpression.GetValue())
-                    {
-                        inputParameters.Add(new SqlStatement(new SqlParameterPart(sqlProvider.GetParameterName(inputParameterExpression.Alias + i.ToString()),
-                                                          inputParameterExpression.Alias + i.ToString())));
-                        ++i;
-                    }
-                    return new SqlStatement(sqlProvider.GetLiteral(inputParameters.ToArray()));
-                }
-                return
-                    new SqlStatement(new SqlParameterPart(sqlProvider.GetParameterName(inputParameterExpression.Alias),
-                                                          inputParameterExpression.Alias));
+                return BuildExpression(sqlProvider, inputParameterExpression);
             }
+
             if (expression is SelectExpression)
                 return Build((SelectExpression)expression, queryContext);
             if (expression is ConstantExpression)
@@ -242,6 +232,22 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
                 return firstOperand;
             }
             return sqlProvider.GetLiteral(expression.NodeType, literalOperands);
+        }
+
+        private static SqlStatement BuildExpression(ISqlProvider sqlProvider, InputParameterExpression inputParameterExpression)
+        {
+            var alias = inputParameterExpression.Alias;
+            if (inputParameterExpression.Type.NotQuerableEnumerable())
+            {
+                var parameterss = ((IEnumerable) inputParameterExpression.GetValue()).Cast<object>();
+                var statements = parameterss.Select((p, id) =>
+                                                        {
+                                                            var nameBase = string.Format("{0}{1}", alias, id);
+                                                            return new SqlStatement(new SqlParameterPart(sqlProvider.GetParameterName(nameBase), nameBase));
+                                                        }).ToArray();
+                return new SqlStatement(sqlProvider.GetLiteral(statements));
+            }
+            return new SqlStatement(new SqlParameterPart(sqlProvider.GetParameterName(alias), alias));
         }
 
         private Expressions.ExpressionTranslator GetTranslator(DbLinq.Vendor.ISqlProvider provider)

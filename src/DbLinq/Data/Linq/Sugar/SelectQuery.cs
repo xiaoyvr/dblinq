@@ -38,6 +38,7 @@ using DbLinq.Data.Linq;
 using DbLinq.Data.Linq.Mapping;
 using DbLinq.Data.Linq.Sql;
 using DbLinq.Data.Linq.Sugar.Expressions;
+using DbLinq.Util;
 
 namespace DbLinq.Data.Linq.Sugar
 {
@@ -88,7 +89,7 @@ namespace DbLinq.Data.Linq.Sugar
             var dbCommand = base.GetCommand(false);
             foreach (var parameter in InputParameters)
             {
-                if (parameter.Type.IsArray)
+                if (parameter.Type.NotQuerableEnumerable())
                 {
                     int i = 0;
                     foreach (object p in (Array)parameter.GetValue())

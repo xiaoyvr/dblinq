@@ -95,7 +95,7 @@ namespace DbLinq.Data.Linq.Implementation
                 {
                     rawData[prefix + memberInfo.Name] = propertyValue;
                 }
-                else if (memberType.IsArray)
+                else if (memberType.NotQuerableEnumerable())
                 {
                     if (propertyValue != null)
                     {

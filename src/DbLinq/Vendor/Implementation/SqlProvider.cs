@@ -25,6 +25,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -1478,10 +1479,8 @@ namespace DbLinq.Vendor.Implementation
         /// <returns></returns>
         protected virtual SqlStatement GetLiteral(Array array)
         {
-            var listItems = new List<SqlStatement>();
-            foreach (object o in array)
-                listItems.Add(GetLiteral(o));
-            return SqlStatement.Format("({0})", SqlStatement.Join(", ", listItems.ToArray()));
+            var sqlStatements = array.Cast<object>().Select(GetLiteral).ToArray();
+            return SqlStatement.Format("({0})", SqlStatement.Join(", ", sqlStatements));
         }
 
         /// <summary>

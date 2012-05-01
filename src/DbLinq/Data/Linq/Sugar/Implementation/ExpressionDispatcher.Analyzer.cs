@@ -740,6 +740,12 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
 
             #endregion
 
+            var inputParameterExpression = unaliasedExpression as InputParameterExpression;
+            if (inputParameterExpression != null)
+            {
+                
+            }
+
             //var groupByExpression = unaliasedExpression as GroupByExpression;
             //if (groupByExpression != null)
             //    unaliasedExpression = groupByExpression.ColumnExpression.Table;
@@ -1480,30 +1486,30 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
 
         protected virtual Expression AnalyzeContains(IList<Expression> parameters, BuilderContext builderContext)
         {
-            if (parameters[0].Type.IsArray)
+            if (typeof (IQueryable).IsAssignableFrom(parameters[0].Type))
             {
-                Expression array = Analyze(parameters[0], builderContext);
+                Expression p0 = Analyze(parameters[1], builderContext);
+                BuilderContext newContext = builderContext.NewSelect();
+                InputParameterExpression ip1 = new InputParameterExpression(parameters[0], "dummy");
+
+                Expression p1 = AnalyzeQueryProvider(ip1.GetValue() as QueryProvider, newContext);
+                ColumnExpression c = p1 as ColumnExpression;
+                if (!newContext.CurrentSelect.Tables.Contains(c.Table))
+                {
+                    newContext.CurrentSelect.Tables.Add(c.Table);
+                }
+                // TODO: verify if this is the right place to work
+                return new SpecialExpression(SpecialExpressionType.In, p0,
+                    newContext.CurrentSelect.Mutate(new Expression[] {p1}));
+            }
+
+            if (parameters[0].Type.NotQuerableEnumerable())
+            {
+                var array = Analyze(parameters[0], builderContext);
                 var expression = Analyze(parameters[1], builderContext);
                 return new SpecialExpression(SpecialExpressionType.In, expression, array);
             }
-            else
-            {
-                if (typeof(IQueryable).IsAssignableFrom(parameters[0].Type))
-                {
-                    Expression p0 = Analyze(parameters[1], builderContext);
-                    BuilderContext newContext = builderContext.NewSelect();
-                    InputParameterExpression ip1 = new InputParameterExpression(parameters[0], "dummy");
 
-                    Expression p1 = AnalyzeQueryProvider(ip1.GetValue() as QueryProvider, newContext);
-                    ColumnExpression c = p1 as ColumnExpression;
-                    if (!newContext.CurrentSelect.Tables.Contains(c.Table))
-                    {
-                        newContext.CurrentSelect.Tables.Add(c.Table);
-                    }
-                    // TODO: verify if this is the right place to work
-                    return new SpecialExpression(SpecialExpressionType.In, p0, newContext.CurrentSelect.Mutate(new Expression[] { p1 }));
-                }
-            }
             throw Error.BadArgument("S0548: Can't analyze Contains() method");
         }
 

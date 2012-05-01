@@ -25,6 +25,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Linq;
 using System.Data.Linq.Mapping;
 using System.Reflection;
@@ -136,6 +137,11 @@ namespace DbLinq.Util
             if (t.IsGenericTypeDefinition)
                 return name.Split('`')[0];
             return name;
+        }
+
+        public static bool NotQuerableEnumerable(this Type t)
+        {
+            return !typeof (IQueryable).IsAssignableFrom(t) && typeof (IEnumerable).IsAssignableFrom(t);
         }
     }
 }

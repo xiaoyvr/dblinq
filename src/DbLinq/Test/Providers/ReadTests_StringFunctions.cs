@@ -703,5 +703,13 @@ using nwind;
             var list = q.ToList();
         }
 
+        [Test]
+        public void TestToString()
+        {
+            var db = CreateDB();
+            var x = 123;
+            var q = db.Employees.Where(e => e.HomePhone == x.ToString());
+            var list = q.ToList();
+        }
     }
 }

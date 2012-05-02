@@ -1496,12 +1496,12 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
         {
             if (typeof (IQueryable).IsAssignableFrom(parameters[0].Type))
             {
-                Expression p0 = Analyze(parameters[1], builderContext);
-                BuilderContext newContext = builderContext.NewSelect();
-                InputParameterExpression ip1 = new InputParameterExpression(parameters[0], "dummy");
+                var p0 = Analyze(parameters[1], builderContext);
+                var newContext = builderContext.NewSelect();
+                var ip1 = new InputParameterExpression(parameters[0], "dummy"){IsMutiple = true};
 
-                Expression p1 = AnalyzeQueryProvider(ip1.GetValue() as QueryProvider, newContext);
-                ColumnExpression c = p1 as ColumnExpression;
+                var p1 = AnalyzeQueryProvider(ip1.GetValue() as QueryProvider, newContext);
+                var c = p1 as ColumnExpression;
                 if (!newContext.CurrentSelect.Tables.Contains(c.Table))
                 {
                     newContext.CurrentSelect.Tables.Add(c.Table);
@@ -1510,10 +1510,14 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
                 return new SpecialExpression(SpecialExpressionType.In, p0,
                     newContext.CurrentSelect.Mutate(new Expression[] {p1}));
             }
-
             if (parameters[0].Type.NotQuerableEnumerable())
             {
                 var array = Analyze(parameters[0], builderContext);
+                var inputParaExpr = array as InputParameterExpression;
+                if (inputParaExpr != null)
+                {
+                    inputParaExpr.IsMutiple = true;
+                }
                 var expression = Analyze(parameters[1], builderContext);
                 return new SpecialExpression(SpecialExpressionType.In, expression, array);
             }

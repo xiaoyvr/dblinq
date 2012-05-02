@@ -43,7 +43,7 @@ namespace DbLinq.Data.Linq.Sugar.Expressions
         public Expression Expression { get; private set; }
 
         public string Alias { get; set; }
-
+        public bool IsMutiple { get; set; }
         private readonly Delegate getValueDelegate;
         /// <summary>
         /// Returns the outer parameter value
@@ -58,7 +58,7 @@ namespace DbLinq.Data.Linq.Sugar.Expressions
             : base(ExpressionType, expression.Type)
         {
             Expression = expression;
-            var lambda = Expression.Lambda(expression);
+            var lambda = Lambda(expression);
             getValueDelegate = lambda.Compile();
             Alias = alias;
         }

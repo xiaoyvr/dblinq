@@ -25,6 +25,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using DbLinq.Data.Linq.Database;
@@ -85,14 +86,14 @@ namespace DbLinq.Data.Linq.Sugar
 
         public override ITransactionalCommand GetCommand()
         {
-            IDbDataParameter dbParameter;
             var dbCommand = base.GetCommand(false);
             foreach (var parameter in InputParameters)
             {
-                if (parameter.Type.NotQuerableEnumerable())
+                IDbDataParameter dbParameter;
+                if (parameter.IsMutiple)
                 {
                     int i = 0;
-                    foreach (object p in (Array)parameter.GetValue())
+                    foreach (var p in (IEnumerable)parameter.GetValue())
                     {
                         dbParameter = dbCommand.Command.CreateParameter();
                         dbParameter.ParameterName = DataContext.Vendor.SqlProvider.GetParameterName(parameter.Alias + i.ToString());

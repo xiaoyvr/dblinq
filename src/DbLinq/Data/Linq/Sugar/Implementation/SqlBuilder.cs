@@ -237,7 +237,7 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
         private static SqlStatement BuildExpression(ISqlProvider sqlProvider, InputParameterExpression inputParameterExpression)
         {
             var alias = inputParameterExpression.Alias;
-            if (inputParameterExpression.Type.NotQuerableEnumerable())
+            if (inputParameterExpression.IsMutiple)
             {
                 var parameterss = ((IEnumerable) inputParameterExpression.GetValue()).Cast<object>();
                 var statements = parameterss.Select((p, id) =>

@@ -150,7 +150,7 @@ using nwind;
         {
             var db = CreateDB();
             var orderId = db.Orders.First().OrderID;
-            var ints = (IEnumerable<int>)new int[] { 1, 2, 3, orderId };
+            var ints = (IEnumerable<int>)new[] { 1, 2, 3, orderId };
             var order = db.Orders.FirstOrDefault(o => ints.Contains(o.OrderID));
             Assert.That(order, Is.Not.Null);
         }

@@ -695,5 +695,13 @@ using nwind;
 
         }
 
+        [Test]
+        public void Equals()
+        {
+            var db = CreateDB();
+            var q = db.Employees.Where(e => e.HomePhone.Equals("123"));
+            var list = q.ToList();
+        }
+
     }
 }

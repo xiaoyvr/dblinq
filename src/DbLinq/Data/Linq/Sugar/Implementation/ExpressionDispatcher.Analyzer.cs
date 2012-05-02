@@ -305,6 +305,8 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
                     return popCallStack(AnalyzeGenericSpecialExpressionType(SpecialExpressionType.RTrim, parameters, builderContext));
                 case "TrimStart":
                     return popCallStack(AnalyzeGenericSpecialExpressionType(SpecialExpressionType.LTrim, parameters, builderContext));
+                case "Equals":
+                    return popCallStack(AnalyzeEquals(parameters, builderContext));
                 default:
                     throw Error.BadArgument("S0133: Implement QueryMethod String.{0}.", method.Name);
             }
@@ -1448,6 +1450,13 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
         protected virtual Expression AnalyzeLikeStart(IList<Expression> parameters, BuilderContext builderContext)
         {
             return AnalyzeLike(parameters[0], null, parameters[1], "%", builderContext);
+        }
+
+        protected virtual Expression AnalyzeEquals(IList<Expression> parameters, BuilderContext builderContext)
+        {
+            var leftExpr = Analyze(parameters[0], builderContext);
+            var rightExpr = Analyze(parameters[1], builderContext);
+            return Expression.Equal(leftExpr, rightExpr);
         }
 
         protected virtual Expression AnalyzeLikeEnd(IList<Expression> parameters, BuilderContext builderContext)

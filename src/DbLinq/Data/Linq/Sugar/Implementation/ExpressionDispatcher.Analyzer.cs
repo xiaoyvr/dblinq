@@ -108,7 +108,7 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
                 case ExpressionType.Call:
                     return AnalyzeCall((MethodCallExpression)expression, parameters, builderContext);
                 case ExpressionType.Lambda:
-                    return AnalyzeLambda(expression, parameters, builderContext);
+                    return AnalyzeLambda((LambdaExpression)expression, parameters, builderContext);
                 case ExpressionType.Parameter:
                     return AnalyzeParameter(expression, builderContext);
                 case ExpressionType.Quote:
@@ -227,11 +227,13 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
                 case "Min":
                     return popCallStack(AnalyzeProjectionQuery(SpecialExpressionType.Min, parameters, builderContext));
                 case "OrderBy":
-                case "ThenBy":
                     return popCallStack(AnalyzeOrderBy(parameters, false, builderContext));
+                case "ThenBy":
+                    return popCallStack(AnalyzeThenBy(parameters, false, builderContext));
                 case "OrderByDescending":
-                case "ThenByDescending":
                     return popCallStack(AnalyzeOrderBy(parameters, true, builderContext));
+                case "ThenByDescending":
+                    return popCallStack(AnalyzeThenBy(parameters, true, builderContext));
                 case "Select":
                     return popCallStack(AnalyzeSelect(parameters, builderContext));
                 case "SelectMany":
@@ -692,15 +694,12 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
         /// - filling its input parameters with what's on the stack
         /// - using the body (parameters are registered in the context)
         /// </summary>
-        /// <param name="expression"></param>
+        /// <param name="lambdaExpression"></param>
         /// <param name="parameters"></param>
         /// <param name="builderContext"></param>
         /// <returns></returns>
-        protected virtual Expression AnalyzeLambda(Expression expression, IList<Expression> parameters, BuilderContext builderContext)
+        protected virtual Expression AnalyzeLambda(LambdaExpression lambdaExpression, IList<Expression> parameters, BuilderContext builderContext)
         {
-            var lambdaExpression = expression as LambdaExpression;
-            if (lambdaExpression == null)
-                throw Error.BadArgument("S0227: Unknown type for AnalyzeLambda() ({0})", expression.GetType());
             // for a lambda, first parameter is body, others are input parameters
             // so we create a parameters stack
             for (int parameterIndex = 0; parameterIndex < lambdaExpression.Parameters.Count; parameterIndex++)
@@ -1531,6 +1530,15 @@ namespace DbLinq.Data.Linq.Sugar.Implementation
         /// <param name="builderContext"></param>
         /// <returns></returns>
         protected virtual Expression AnalyzeOrderBy(IList<Expression> parameters, bool descending, BuilderContext builderContext)
+        {
+            var table = Analyze(parameters[0], builderContext);
+            // the column is related to table
+            var column = Analyze(parameters[1], table, builderContext);
+            builderContext.CurrentSelect.OrderBy.Insert(0, new OrderByExpression(descending, column));
+            return table;
+        }
+
+        protected virtual Expression AnalyzeThenBy(IList<Expression> parameters, bool descending, BuilderContext builderContext)
         {
             var table = Analyze(parameters[0], builderContext);
             // the column is related to table

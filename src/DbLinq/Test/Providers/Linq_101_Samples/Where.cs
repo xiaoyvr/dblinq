@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using NUnit.Framework.SyntaxHelpers;
 using Test_NUnit;
 using NUnit.Framework;
 using Test_NUnit.Linq_101_Samples;
@@ -148,18 +149,20 @@ using nwind;
         public void EvalContainsWithIEnumrable()
         {
             var db = CreateDB();
-            var ints = (IEnumerable<int>) new int[]{1, 2,3};
-            db.Orders.FirstOrDefault(o => ints.Contains(o.OrderID));
+            var orderId = db.Orders.First().OrderID;
+            var ints = (IEnumerable<int>)new int[] { 1, 2, 3, orderId };
+            var order = db.Orders.FirstOrDefault(o => ints.Contains(o.OrderID));
+            Assert.That(order, Is.Not.Null);
         }
 
-        [Test(Description = "lambda inside where")]
+        [Test(Description = "non queryable lambda inside where")]
         public void LinqToSqlWhere10()
         {
-            Northwind db = CreateDB();
+            var db = CreateDB();
             var ints = new int[0];
-            var x = 0;
-            var ord = db.Orders.Where(o => ints.All(i => i > 0)).FirstOrDefault(o => true);
+            var ord = db.Orders.Where(o => ints.All(i => i == 0)).FirstOrDefault(o => true);
 //            var ord = db.Orders.Where(o => o.OrderID > 0).FirstOrDefault(o => true);            
+//            var x = 0;
 //            var ord = db.Orders.Where(o => x <= 0).FirstOrDefault();
         }        
     }

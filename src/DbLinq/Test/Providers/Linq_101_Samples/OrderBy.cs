@@ -76,9 +76,7 @@ using nwind;
         {
             Northwind db = CreateDB();
 
-            var q = from c in db.Customers
-                    orderby c.City, c.ContactName
-                    select c;
+            var q = db.Customers.Where(c => c.City.StartsWith("B")).OrderBy(c => c.City).ThenBy(c => c.ContactName);
 
             var list = q.ToList();
             Assert.IsTrue(list.Count > 0);
@@ -121,5 +119,14 @@ using nwind;
             var list = categories.ToList();
             Assert.IsTrue(list.Count > 0);
         }
+
+        [Test]
+        public void OrderByTwice()
+        {
+            var db = CreateDB();
+            var q = db.Orders.Where(o => o.OrderID == 0).OrderBy(o => o.ShipCountry).OrderBy(o => o.Freight);
+            var list = q.ToList();
+        }
+
     }
 }
